@@ -16,6 +16,7 @@ use GraphQL\Utils\Utils;
 use Apollo\Federation\Types\EntityObjectType;
 use Apollo\Federation\Utils\FederatedSchemaPrinter;
 use Overblog\GraphQLBundle\Definition\Type\ExtensibleSchema;
+use Redeye\GraphqlFederationBundle\EntityTypeResolver\EntityTypeResolverInterface;
 
 /**
  * A federated GraphQL schema definition (see [related docs](https://www.apollographql.com/docs/apollo-server/federation/introduction))
@@ -62,10 +63,13 @@ class ExtensibleFederatedSchema extends ExtensibleSchema
     /** @var Directive[] */
     protected $entityDirectives;
 
-    public function __construct($config)
+    protected EntityTypeResolverInterface $entityTypeResolver;
+
+    public function __construct($config, EntityTypeResolverInterface $entityTypeResolver)
     {
         $this->entityTypes = $this->extractEntityTypes($config);
         $this->entityDirectives = array_merge(Directives::getDirectives(), Directive::getInternalDirectives());
+        $this->entityTypeResolver = $entityTypeResolver;
 
         $config = array_merge($config, $this->getEntityDirectivesConfig($config), $this->getQueryTypeConfig($config));
 
@@ -156,7 +160,8 @@ class ExtensibleFederatedSchema extends ExtensibleSchema
 
         $entityType = new UnionType([
             'name' => '_Entity',
-            'types' => array_values($this->getEntityTypes())
+            'types' => array_values($this->getEntityTypes()),
+            'resolveType' => $this->entityTypeResolver,
         ]);
 
         $anyType = new CustomScalarType([
