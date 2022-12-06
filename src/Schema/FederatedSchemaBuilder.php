@@ -8,16 +8,18 @@ use GraphQL\Type\Definition\Type;
 use Overblog\GraphQLBundle\Definition\Builder\SchemaBuilder;
 use Overblog\GraphQLBundle\Definition\Type\ExtensibleSchema;
 use Overblog\GraphQLBundle\Resolver\TypeResolver;
+use Redeye\GraphqlFederationBundle\EntityTypeResolver\EntityTypeResolverInterface;
 
 class FederatedSchemaBuilder extends SchemaBuilder
 {
     private TypeResolver $typeResolver;
+    private EntityTypeResolverInterface $entityTypeResolver;
 
-    public function __construct(TypeResolver $typeResolver, bool $enableValidation = false)
+    public function __construct(TypeResolver $typeResolver, EntityTypeResolverInterface $entityTypeResolver)
     {
         $this->typeResolver = $typeResolver;
-        $this->enableValidation = $enableValidation;
-        parent::__construct($typeResolver, $enableValidation);
+        $this->entityTypeResolver = $entityTypeResolver;
+        parent::__construct($typeResolver, false);
     }
 
     public function create(
@@ -36,7 +38,7 @@ class FederatedSchemaBuilder extends SchemaBuilder
             throw new \RuntimeException("Query is a required type");
         }
 
-        $schema = new ExtensibleFederatedSchema($this->buildSchemaArguments($name, $query, $mutation, $subscription, $types));
+        $schema = new ExtensibleFederatedSchema($this->buildSchemaArguments($name, $query, $mutation, $subscription, $types), $this->entityTypeResolver);
         $extensions = [];
 
         $schema->setExtensions($extensions);
