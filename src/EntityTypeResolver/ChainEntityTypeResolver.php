@@ -21,7 +21,6 @@ class ChainEntityTypeResolver implements EntityTypeResolverInterface
     public function __invoke($value, $context, ResolveInfo $info)
     {
         foreach ($this->entityTypeResolvers as $typeResolver) {
-            dump($typeResolver);
             $type = $typeResolver($value, $context, $info);
             if ($type) {
                 return $type;
