@@ -1,0 +1,18 @@
+{
+    "name": "redeye/graphql-federation-bundle",
+    "type": "symfony-bundle",
+    "license": "MIT",
+    "autoload": {
+        "psr-4": {
+            "Redeye\\GraphqlFederationBundle\\": "src/"
+        }
+    },
+    "require": {
+        "php": "7.4.*||8.0.*||8.1.*",
+        "symfony/console": "^5.4||^6.0",
+        "symfony/dependency-injection": "^5.4||^6.0",,
+        "overblog/graphql-bundle": "0.14.*||0.13.*",
+        "skillshare/apollo-federation-php": "1.6.*",
+        "webonyx/graphql-php": "^0.13.8 || ^14.0"
+    }
+}
