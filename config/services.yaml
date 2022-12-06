@@ -1,7 +1,7 @@
 services:
     Redeye\GraphqlFederationBundle\Command\DumpFederatedSchemaCommand:
         arguments:
-            $requestExecutor: @overblog_graphql.request_executor
+            $requestExecutor: '@overblog_graphql.request_executor'
         tags:
             - { name: 'console.command', command: "redeye:graphql:dump-federated" }
 
