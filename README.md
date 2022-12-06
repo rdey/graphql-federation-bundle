@@ -8,6 +8,8 @@ in overblog/graphql-bundle, but here we are.
 
 ## Usage
 
+### Configuring types
+
 You need to manually define your federated types as Symfony services. 
 These services need to be tagged with `overblog_graphql.type`. Our
 suggestion is this:
@@ -61,4 +63,44 @@ class TestEntity extends EntityObjectType implements AliasedInterface
 }
 ```
 
-You can also dump a schema with the correct Federation directives using `bin/console redeye:graphql:dump-federated`.
+### Entity type resolution
+
+The use case is analogous to TypeResolvers in OverblogGraphQLBundle. Implement `Redeye\GraphqlFederationBundle\EntityTypeResolver\EntityTypeResolverInterface` in a service, and tag it with `redeye_graphql_federation.entity_type_resolver`.
+
+#### Example
+
+```php
+<?php
+
+declare(strict_types=1);
+
+namespace App\GraphQL;
+
+use App\Model\Person;
+use GraphQL\Type\Definition\ResolveInfo;
+use Redeye\GraphqlFederationBundle\EntityTypeResolver\EntityTypeResolverInterface;
+
+class EntityTypeResolver implements EntityTypeResolverInterface
+{
+    public function __invoke($value, $context, ResolveInfo $info)
+    {
+        if ($value instanceof Person) {
+            return 'Person';
+        }
+
+        return null;
+    }
+}
+
+```
+
+```yaml
+services:
+    App\GraphQL\EntityTypeResolver:
+        tags:
+            - { name: 'redeye_graphql_federation.entity_type_resolver' }
+```
+
+### Dumping the schema
+
+You can dump a schema with the correct Federation directives using `bin/console redeye:graphql:dump-federated`.
