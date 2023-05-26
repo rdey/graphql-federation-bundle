@@ -1,7 +1,7 @@
 # rdey-graphql-federation-bundle
 
 A tiny, simplistic and fragile bundle to integrate overblog/graphql-bundle 
-(specifically 0.13 and 0.14) and skillshare/apollo-federation-php (1.6).
+(specifically 0.13 and 0.14) and skillshare/apollo-federation-php (1.7.0).
 
 This bundle shouldn't have to exist, as this should more properly belong 
 in overblog/graphql-bundle, but here we are.
