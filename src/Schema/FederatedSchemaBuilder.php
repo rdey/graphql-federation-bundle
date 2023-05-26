@@ -4,8 +4,10 @@ declare(strict_types=1);
 
 namespace Redeye\GraphqlFederationBundle\Schema;
 
+use Apollo\Federation\Types\EntityObjectType;
 use GraphQL\Type\Definition\Type;
 use Overblog\GraphQLBundle\Definition\Builder\SchemaBuilder;
+use Overblog\GraphQLBundle\Definition\Resolver\AliasedInterface;
 use Overblog\GraphQLBundle\Definition\Type\ExtensibleSchema;
 use Overblog\GraphQLBundle\Resolver\TypeResolver;
 use Redeye\GraphqlFederationBundle\EntityTypeResolver\EntityTypeResolverInterface;
@@ -29,6 +31,14 @@ class FederatedSchemaBuilder extends SchemaBuilder
         ?string $subscriptionAlias = null,
         array $types = []
     ): ExtensibleSchema {
+        $entityTypes = [];
+
+        foreach ($this->typeResolver->getSolutions() as $type) {
+            if ($type instanceof EntityObjectType) {
+                $entityTypes[$type->name] = $type;
+            }
+        }
+
         $this->typeResolver->setCurrentSchemaName($name);
         $query = $this->typeResolver->resolve($queryAlias);
         $mutation = $this->typeResolver->resolve($mutationAlias);
@@ -38,7 +48,7 @@ class FederatedSchemaBuilder extends SchemaBuilder
             throw new \RuntimeException("Query is a required type");
         }
 
-        $schema = new ExtensibleFederatedSchema($this->buildSchemaArguments($name, $query, $mutation, $subscription, $types), $this->entityTypeResolver);
+        $schema = new ExtensibleFederatedSchema($this->buildSchemaArguments($name, $query, $mutation, $subscription, $types, $entityTypes), $this->entityTypeResolver);
         $extensions = [];
 
         $schema->setExtensions($extensions);
@@ -46,7 +56,7 @@ class FederatedSchemaBuilder extends SchemaBuilder
         return $schema;
     }
 
-    private function buildSchemaArguments(string $schemaName, Type $query, ?Type $mutation, ?Type $subscription, array $types = []): array
+    private function buildSchemaArguments(string $schemaName, Type $query, ?Type $mutation, ?Type $subscription, array $types = [], array $entityTypes = []): array
     {
         return [
             'query' => $query,
@@ -61,6 +71,9 @@ class FederatedSchemaBuilder extends SchemaBuilder
                 $this->typeResolver->setCurrentSchemaName($schemaName);
 
                 return array_map([$this->typeResolver, 'resolve'], $types);
+            },
+            'entityTypes' => function() use ($entityTypes) {
+                return $entityTypes;
             },
         ];
     }
