@@ -17,7 +17,7 @@ class TypeResolvingEntityUnionType extends UnionType
             'types' => is_callable($entityTypes)
                 ? fn () => array_values($entityTypes())
                 : array_values($entityTypes),
-            'typeResolver' => $typeResolver,
+            'resolveType' => $typeResolver,
         ];
         parent::__construct($config);
     }
