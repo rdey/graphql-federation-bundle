@@ -2,14 +2,14 @@ services:
     Redeye\GraphqlFederationBundle\EntityTypeResolver\ChainEntityTypeResolver:
         arguments:
             $entityTypeResolvers: !tagged { tag: 'redeye_graphql_federation.entity_type_resolver' }
-    
+
     Redeye\GraphqlFederationBundle\Command\DumpFederatedSchemaCommand:
         arguments:
-            $requestExecutor: '@overblog_graphql.request_executor'
+            $requestExecutor: '@redeye_graphql.request_executor'
         tags:
             - { name: 'console.command', command: "redeye:graphql:dump-federated" }
 
     Redeye\GraphqlFederationBundle\Schema\FederatedSchemaBuilder:
         arguments:
-            $typeResolver: '@Overblog\GraphQLBundle\Resolver\TypeResolver'
+            $typeResolver: '@Redeye\GraphQLBundle\Resolver\TypeResolver'
             $entityTypeResolver: '@Redeye\GraphqlFederationBundle\EntityTypeResolver\ChainEntityTypeResolver'

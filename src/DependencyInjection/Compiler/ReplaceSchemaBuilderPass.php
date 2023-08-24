@@ -12,6 +12,6 @@ class ReplaceSchemaBuilderPass implements CompilerPassInterface
 {
     public function process(ContainerBuilder $container)
     {
-        $container->setAlias('overblog_graphql.schema_builder', FederatedSchemaBuilder::class);
+        $container->setAlias('redeye_graphql.schema_builder', FederatedSchemaBuilder::class);
     }
 }
