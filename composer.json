@@ -12,6 +12,6 @@
         "symfony/console": "^5.4||^6.0",
         "symfony/dependency-injection": "^5.4||^6.0",
         "skillshare/apollo-federation-php": "1.7.0",
-        "webonyx/graphql-php": "^0.13.8 || ^14.0"
+        "webonyx/graphql-php": "^0.13.8 || ^14.5"
     }
 }
